@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Analysis of Permanent Forest Cover in Malaysia (2003 to 2021)</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <style>
+        body {
+            font: Arial;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: #f2fcf0;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            border-radius: 15px;
+            margin: -20px -20px 40px -20px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin: 0;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            color:#276a41
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            margin-top: 10px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .description {
+            padding: 25px;
+            margin-bottom: 30px;
+            background-color: rgb(242, 252, 249);
+        }
+        
+        .description h2 {
+            color: #00070e;
+            font-size: 1.5em;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .description p {
+            color: #347254;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        
+        .highlights {
+            background-color: #E5F5E4;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .highlights h3 {
+            color: #000f07;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .highlights ul {
+            color: #306545;
+            padding-left: 20px;
+        }
+        
+        .highlights li {
+            margin-bottom: 8px;
+        }
+        
+        .data-source {
+            border: 1px solid #276a41;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.95em;
+            color: #1E1F1A;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .description {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Permanent Forest Cover in Malaysias (2003 to 2021)</h1>
+            <div class="subtitle">A visualisation of Malaysia's forest cover, comparing distribution patterns across states and observing changes in coverage levels over different years.</div>
+        </div>
+        
+        <div class="description">
+            <h2>Understanding Malaysia's Forest Heritage</h2>
+            <p>
+                Malaysia is famous for its rich biodiversity and extensive forest cover, with one of the world's oldest rainforests. This interactive choropleth map 
+                visually presents the permanent forest cover rates across Malaysia's states from 2003 to 2021, providing crucial insights into the nation's environmental 
+                conservation practices and differences in forest coverage between states.
+            </p>
+            <p>
+                This visualisation employs a colour-coding system, with deep green hues representing higher forest cover, making it easier to identify states with 
+                the highest percentage of forest cover. These data are essential for understanding conservation priorities, environmental policy planning, and 
+                Malaysia's efforts towards achieving the Sustainable Development Goals.
+            </p>
+            <p>
+                Select the desired time period in the time slider to view the forest cover chart for that year.
+            </p>
+            
+            <div class="highlights">
+                <h3>Key Description from the Visualization:</h3>
+                <ul>
+                    <li><strong>Regional differences:</strong>  Forest cover in Sabah and Sarawak is generally higher than in western Malaysia. 
+                        The state with the highest forest cover in the west is Melaka (which also holds the highest forest cover across the whole of Malaysia). </li>
+                    <li><strong>Protection effectiveness:</strong> Several states maintain forest cover exceeding 40%, demonstrating effective conservation measures.</li>
+                    <li><strong>Notes:</strong> The data of Sarawak is NA in 2021, so there is a missing value at that time (no color at that region in 2021 in map)
+                </ul>
+            </div>
+        </div>
+        
+        <div class="visualization-container">
+            <div id="vis"></div>
+        </div>
+        
+        <div class="data-source">
+            <strong>Data Source:</strong> This visualisation is based on official Malaysian government data concerning protected forest areas, which has 
+            been processed and cleaned to present reported figures from 2003 to 2021. The geographical boundaries are sourced from Natural Earth Data to 
+            ensure accuracy and consistency with international mapping standards.
+            <a href= https://open.dosm.gov.my/data-catalogue/forest_reserve_state>
+                Click here to view the source website
+            </a>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var vlSpec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "description": "Malaysia states - Permanent forest area percentage by year (slider).",
+            "width": 700,
+            "height": 400,
+            "background": "#cfeeff",
+
+            "projection": { "type": "mercator", "center": [109, 4], "scale": 2200 },
+
+            "params": [
+                {
+                "name": "selectedYear",
+                "value": 2021,
+                "bind": { "input": "range", "min": 2003, "max": 2021, "step": 1, "name": "Select Year: " }
+                }
+            ],
+
+            "layer": [
+                {
+                "name": "graticule",
+                "data": { "graticule": { "step": [10, 10] } },
+                "mark": { "type": "geoshape", "stroke": "#b8d0e6", "strokeWidth": 0.6, "fill": null }
+                },
+
+                {
+                "name": "states-outline",
+                "data": {
+                    "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Week9-Homework/refs/heads/main/malaysia-states.topojson",
+                    "format": { "type": "topojson", "feature": "states" }
+                },
+                "mark": { "type": "geoshape", "stroke": "#9aa6b2", "strokeWidth": 0.7, "fill": null }
+                },
+
+                {
+                "name": "choropleth",
+                "data": {
+                    "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Week9-Homework/refs/heads/main/cleaned_forest_reserve_state.csv",
+                    "format": { "type": "csv" }
+                },
+                "transform": [
+                    { "calculate": "trim(datum.name)", "as": "name_trim" },
+                    {
+                    "calculate": "datum.name_trim == 'Pulau Pinang' ? 'Penang' : (datum.name_trim == 'W.P. Kuala Lumpur / W.P. Labuan / W.P. Putrajaya' ? 'Kuala Lumpur / Labuan / Putrajaya' : datum.name_trim)",
+                    "as": "state_key"
+                    },
+                    { "calculate": "year(toDate(datum.date))", "as": "year_num" },
+                    { "filter": "datum.year_num == selectedYear" },
+                    {
+                    "lookup": "state_key",
+                    "from": {
+                        "data": {
+                        "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Week9-Homework/refs/heads/main/malaysia-states.topojson",
+                        "format": { "type": "topojson", "feature": "states" }
+                        },
+                        "key": "properties.Name"
+                    },
+                    "as": "geo"
+                    },
+                    { "filter": "datum.geo != null" }
+                ],
+                "mark": { "type": "geoshape", "stroke": "#666666", "strokeWidth": 0.6 },
+                "encoding": {
+                    "shape": { "field": "geo", "type": "geojson" },
+                    "color": {
+                    "field": "forest_cover_rate_percentage",
+                    "type": "quantitative",
+                    "title": "Permanent Forest Coverage (%)",
+                    "scale": {
+                        "type": "threshold",
+                        "domain": [10, 20, 30, 40, 50, 60],
+                        "range": ["#EBFAEA", "#A3EA9F", "#5AD954", "#2CAB26", "#23861D", "#196015", "#051505"]
+                    },
+                    "legend": { "orient": "right", "titleLimit": 200, "symbolType": "square" }
+                    },
+                    "tooltip": [
+                    { "field": "state_key", "type": "nominal", "title": "State:" },
+                    { "field": "year_num", "type": "quantitative", "title": "Year:" },
+                    { "field": "forest_cover_rate_percentage", "type": "quantitative", "title": "Forest Coverage (%):", "format": ".1f" }
+                    ]
+                }
+                }
+            ],
+
+            "config": { "view": { "stroke": "transparent" }, "axis": { "domain": false } }
+            };
+
+        vegaEmbed('#vis', vlSpec, {
+            actions: false,
+            renderer: 'svg'
+        }).catch(console.error);
+    </script>
+</body>
+</html>
+
+
