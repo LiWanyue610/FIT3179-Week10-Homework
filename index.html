@@ -1,252 +1,389 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visual Analysis of Permanent Forest Cover in Malaysia (2003 to 2021)</title>
-    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
-    <style>
-        body {
-            font: Arial;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            background-color: #f2fcf0;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 0;
-            border-radius: 15px;
-            margin: -20px -20px 40px -20px;
-        }
-        
-        h1 {
-            font-size: 2.5em;
-            margin: 0;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            color:#276a41
-        }
-        
-        .subtitle {
-            font-size: 1.2em;
-            margin-top: 10px;
-            opacity: 0.9;
-            font-weight: 300;
-        }
-        
-        .description {
-            padding: 25px;
-            margin-bottom: 30px;
-            background-color: rgb(242, 252, 249);
-        }
-        
-        .description h2 {
-            color: #00070e;
-            font-size: 1.5em;
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-        
-        .description p {
-            color: #347254;
-            font-size: 1.1em;
-            margin-bottom: 15px;
-        }
-        
-        .highlights {
-            background-color: #E5F5E4;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        
-        .highlights h3 {
-            color: #000f07;
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-        
-        .highlights ul {
-            color: #306545;
-            padding-left: 20px;
-        }
-        
-        .highlights li {
-            margin-bottom: 8px;
-        }
-        
-        .data-source {
-            border: 1px solid #276a41;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            font-size: 0.95em;
-            color: #1E1F1A;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                padding: 15px;
-            }
-            
-            h1 {
-                font-size: 2em;
-            }
-            
-            .description {
-                padding: 20px;
-            }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Analysis of Malaysia's Permanent Forest Cover</title>
+
+  <!-- Vega libraries (Vega 5 + Vega-Lite 6 + Vega-Embed 6) -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #101a2f;
+      --muted: #9fb0c9;
+      --text: #eaf1ff;
+      --accent: #7bd389;
+      --accent-2: #cfeeff;
+      --border: rgba(255,255,255,0.12);
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 600px at 70% -10%, rgba(63,139,255,0.15), transparent) ,
+                  radial-gradient(900px 500px at 10% 120%, rgba(0,255,204,0.08), transparent),
+                  var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+      line-height: 1.6;
+    }
+    .wrap {
+      max-width: 1080px;
+      margin: 48px auto 80px;
+      padding: 0 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: .08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      background: rgba(255,255,255,0.03);
+    }
+    h1 {
+      font-size: clamp(26px, 4vw, 40px);
+      line-height: 1.15;
+      margin: 0 0 6px 0;
+      letter-spacing: 0.2px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: clamp(14px, 2.1vw, 18px);
+      margin-bottom: 8px;
+    }
+    .author {
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: .02em;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin: 22px 0 34px;
+    }
+    .card__head {
+      padding: 18px 20px 0;
+    }
+    .kicker {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    h2 {
+      margin: 6px 0 10px;
+      font-size: clamp(18px, 2.6vw, 24px);
+    }
+    .desc {
+      color: var(--muted);
+      margin: 0 0 14px;
+      font-size: 15px;
+    }
+    .viz {
+      padding: 6px 10px 2px;
+      background: radial-gradient(400px 200px at 10% 0%, rgba(123,211,137,0.06), transparent);
+    }
+    .caption {
+      padding: 2px 20px 18px;
+      color: var(--muted);
+      font-size: 14px;
+      border-top: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+    }
+    .keypoints {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .chip {
+      border: 1px dashed var(--border);
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.02);
+      font-size: 13.5px;
+    }
+    footer {
+      margin-top: 44px;
+      padding-top: 18px;
+      border-top: 1px dashed var(--border);
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+    code.inline {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12.5px;
+      color: #e3f2ff;
+    }
+    .sr-only { position: absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+  </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Permanent Forest Cover in Malaysias (2003 to 2021)</h1>
-            <div class="subtitle">A visualisation of Malaysia's forest cover, comparing distribution patterns across states and observing changes in coverage levels over different years.</div>
-        </div>
-        
-        <div class="description">
-            <h2>Understanding Malaysia's Forest Heritage</h2>
-            <p>
-                Malaysia is famous for its rich biodiversity and extensive forest cover, with one of the world's oldest rainforests. This interactive choropleth map 
-                visually presents the permanent forest cover rates across Malaysia's states from 2003 to 2021, providing crucial insights into the nation's environmental 
-                conservation practices and differences in forest coverage between states.
-            </p>
-            <p>
-                This visualisation employs a colour-coding system, with deep green hues representing higher forest cover, making it easier to identify states with 
-                the highest percentage of forest cover. These data are essential for understanding conservation priorities, environmental policy planning, and 
-                Malaysia's efforts towards achieving the Sustainable Development Goals.
-            </p>
-            <p>
-                Select the desired time period in the time slider to view the forest cover chart for that year.
-            </p>
-            
-            <div class="highlights">
-                <h3>Key Description from the Visualization:</h3>
-                <ul>
-                    <li><strong>Regional differences:</strong>  Forest cover in Sabah and Sarawak is generally higher than in western Malaysia. 
-                        The state with the highest forest cover in the west is Melaka (which also holds the highest forest cover across the whole of Malaysia). </li>
-                    <li><strong>Protection effectiveness:</strong> Several states maintain forest cover exceeding 40%, demonstrating effective conservation measures.</li>
-                    <li><strong>Notes:</strong> The data of Sarawak is NA in 2010 and 2021, so I used the mean to impute the missing values.
-                </ul>
-            </div>
-        </div>
-        
-        <div class="visualization-container">
-            <div id="vis"></div>
-        </div>
-        
-        <div class="data-source">
-            <strong>Data Source:</strong> This visualisation is based on official Malaysian government data concerning protected forest areas, which has 
-            been processed and cleaned to present reported figures from 2003 to 2021. The geographical boundaries are sourced from Natural Earth Data to 
-            ensure accuracy and consistency with international mapping standards.
-            <a href= https://open.dosm.gov.my/data-catalogue/forest_reserve_state>
-                Click here to view the source website
-            </a>
-        </div>
-    </div>
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">Analysis of Malaysia's Permanent Forest Cover</div>
+      <h1>Analysis of Malaysia's Permanent Forest Cover</h1>
+      <p class="subtitle">Visualisation of Permanent Forest Cover Rates Across Malaysian States</p>
+      <p class="author">Author: Li Wanyue</p>
+    </header>
 
-    <script type="text/javascript">
-        var vlSpec = {
-            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "description": "Malaysia states - Permanent forest area percentage by year (slider).",
-            "width": 700,
-            "height": 400,
-            "background": "#cfeeff",
+    <!-- 图 1：Choropleth Map -->
+    <section class="card" aria-labelledby="map-title">
+      <div class="card__head">
+        <div class="kicker">Choropleth Map · 2021</div>
+        <h2 id="map-title">马来西亚各州永久森林覆盖率（2021）</h2>
+        <p class="desc">
+          这张分级设色地图以经纬网（graticule）和海洋底色衬托各州边界，按照永久森林覆盖率（%）分段着色。鼠标悬停可查看州名与具体比例。
+        </p>
+      </div>
+      <div class="viz">
+        <div id="viz-map" role="img" aria-label="2021年马来西亚各州永久森林覆盖率的分级设色地图"></div>
+      </div>
+      <div class="caption">
+        <strong>关键重点：</strong>
+        <ul class="keypoints">
+          <li class="chip">深绿色代表更高覆盖率；门槛分段：10、20、30、40、50、60。</li>
+          <li class="chip">海洋底色采用柔和蓝色 <code class="inline">#cfeeff</code>，边界描边细致提升可读性。</li>
+          <li class="chip">地图投影为墨卡托（中心 <code class="inline">[109, 4]</code>，缩放 <code class="inline">1200</code>）。</li>
+        </ul>
+      </div>
+    </section>
 
-            "projection": { "type": "mercator", "center": [109, 4], "scale": 2200 },
+    <!-- 图 2：Isotype Chart -->
+    <section class="card" aria-labelledby="iso-title">
+      <div class="card__head">
+        <div class="kicker">Isotype · 2003–2021</div>
+        <h2 id="iso-title">🌳 图标指示的各州森林覆盖率（带年份滑块）</h2>
+        <p class="desc">
+          以等值图示（isotype）呈现：每一棵树代表约<em>10%</em>的永久森林覆盖，最多显示 7 棵（即 70%）。拖动滑块可查看 2003–2021 年任意年份的横向对比。
+        </p>
+      </div>
+      <div class="viz">
+        <div id="viz-iso" role="img" aria-label="2003至2021年可交互的各州森林覆盖率isotype图"></div>
+      </div>
+      <div class="caption">
+        <strong>关键重点：</strong>
+        <ul class="keypoints">
+          <li class="chip">树木数量直观映射覆盖率（每 10% 一棵，向上取整，上限 7）。</li>
+          <li class="chip">按覆盖率降序排列各州，便于发现高覆盖与低覆盖聚集。</li>
+          <li class="chip">滑块选择年份，支持跨年变化对比与趋势洞察。</li>
+        </ul>
+      </div>
+    </section>
 
-            "params": [
-                {
-                "name": "selectedYear",
-                "value": 2021,
-                "bind": { "input": "range", "min": 2003, "max": 2021, "step": 1, "name": "Select Year: " }
-                }
-            ],
+    <footer>
+      <strong>数据来源（Data Sources）：</strong>
+      <span>（请在此处补充数据来源链接与说明）</span>
+    </footer>
+  </div>
 
-            "layer": [
-                {
-                "name": "graticule",
-                "data": { "graticule": { "step": [10, 10] } },
-                "mark": { "type": "geoshape", "stroke": "#b8d0e6", "strokeWidth": 0.6, "fill": null }
-                },
-
-                {
-                "name": "states-outline",
+  <script>
+    // -------------------------------
+    // 规格一：Choropleth Map（用户提供）
+    // -------------------------------
+    const specMap = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "description": "Choropleth of Malaysia states - permanent forest area percentage (2021). Ocean = blue, graticule included.",
+      "width": 700,
+      "height": 400,
+      "background": "#cfeeff",
+      "layer": [
+        {
+          "name": "graticule",
+          "data": {"graticule": true},
+          "mark": {
+            "type": "geoshape",
+            "stroke": "#b8d0e6",
+            "strokeWidth": 0.6,
+            "fill": null
+          },
+          "projection": {"type": "mercator", "center": [109, 4], "scale": 1200}
+        },
+        {
+          "name": "states",
+          "data": {
+            "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Week9-Homework/refs/heads/main/malaysia-states.topojson",
+            "format": {"type": "topojson", "feature": "states"}
+          },
+          "transform": [
+            {
+              "lookup": "properties.Name",
+              "from": {
                 "data": {
-                    "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Week9-Homework/refs/heads/main/malaysia-states.topojson",
-                    "format": { "type": "topojson", "feature": "states" }
+                  "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Week9-Homework/refs/heads/main/cleaned_forest_reserve_state.csv",
+                  "format": {"type": "csv"}
                 },
-                "mark": { "type": "geoshape", "stroke": "#9aa6b2", "strokeWidth": 0.7, "fill": null }
-                },
+                "key": "name",
+                "fields": ["forest_cover_rate_percentage"]
+              }
+            }
+          ],
+          "mark": {
+            "type": "geoshape",
+            "stroke": "#666666",
+            "strokeWidth": 0.6
+          },
+          "encoding": {
+            "color": {
+              "field": "forest_cover_rate_percentage",
+              "type": "quantitative",
+              "title": "Permanent Forest Coverage (%)",
+              "scale": {
+                "type": "threshold",
+                "domain": [10, 20, 30, 40, 50, 60],
+                "range": ["#EBFAEA", "#A3EA9F", "#5AD954", "#2CAB26", "#23861D", "#196015", "#051505"]
+              },
+              "legend": {
+                "orient": "right",
+                "titleLimit": 200,
+                "symbolType": "square"
+              }
+            },
+            "tooltip": [
+              {"field": "properties.Name", "type": "nominal", "title": "State"},
+              {"field": "forest_cover_rate_percentage", "type": "quantitative", "title": "Forest Coverage (%)", "format": ".1f"}
+            ]
+          },
+          "projection": {"type": "mercator", "center": [109, 4], "scale": 1200}
+        }
+      ],
+      "config": {
+        "view": {"stroke": "transparent"},
+        "axis": {"domain": false}
+      }
+    };
 
-                {
-                "name": "choropleth",
-                "data": {
-                    "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Week10-Homework/refs/heads/main/forest_coerage_clean.csv",
-                    "format": { "type": "csv" }
-                },
-                "transform": [
-                    { "calculate": "trim(datum.name)", "as": "name_trim" },
-                    {
-                    "calculate": "datum.name_trim == 'Pulau Pinang' ? 'Penang' : (datum.name_trim == 'W.P. Kuala Lumpur / W.P. Labuan / W.P. Putrajaya' ? 'Kuala Lumpur / Labuan / Putrajaya' : datum.name_trim)",
-                    "as": "state_key"
-                    },
-                    { "calculate": "year(toDate(datum.date))", "as": "year_num" },
-                    { "filter": "datum.year_num == selectedYear" },
-                    {
-                    "lookup": "state_key",
-                    "from": {
-                        "data": {
-                        "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Week9-Homework/refs/heads/main/malaysia-states.topojson",
-                        "format": { "type": "topojson", "feature": "states" }
-                        },
-                        "key": "properties.Name"
-                    },
-                    "as": "geo"
-                    },
-                    { "filter": "datum.geo != null" }
-                ],
-                "mark": { "type": "geoshape", "stroke": "#666666", "strokeWidth": 0.6 },
-                "encoding": {
-                    "shape": { "field": "geo", "type": "geojson" },
-                    "color": {
-                    "field": "forest_cover_rate_percentage",
-                    "type": "quantitative",
-                    "title": "Permanent Forest Coverage (%)",
-                    "scale": {
-                        "type": "threshold",
-                        "domain": [10, 20, 30, 40, 50, 60],
-                        "range": ["#EBFAEA", "#A3EA9F", "#5AD954", "#2CAB26", "#23861D", "#196015", "#051505"]
-                    },
-                    "legend": { "orient": "right", "titleLimit": 200, "symbolType": "square" }
-                    },
-                    "tooltip": [
-                    { "field": "state_key", "type": "nominal", "title": "State:" },
-                    { "field": "year_num", "type": "quantitative", "title": "Year:" },
-                    { "field": "forest_cover_rate_percentage", "type": "quantitative", "title": "Forest Coverage (%):", "format": ".1f" }
-                    ]
-                }
-                }
-            ],
+    // -------------------------------
+    // 规格二：Isotype（用户提供）
+    // -------------------------------
+    const specIso = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json",
+      "description": "Isotype-style: 🌳 per 10% forest cover (capped at 7 = 70%). Slider selects year 2003–2021. Increased horizontal spacing for emojis.",
+      "data": {
+        "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/forest_coerage_clean.csv",
+        "format": {"type": "csv"}
+      },
+      "params": [
+        {
+          "name": "Choose_Year",
+          "value": 2003,
+          "bind": {"input": "range", "min": 2003, "max": 2021, "step": 1},
+          "description": "Choose year"
+        }
+      ],
+      "transform": [
+        {
+          "calculate": "toNumber(substring(datum.date, 0, 4))",
+          "as": "year"
+        },
+        {
+          "filter": "datum.year == Choose_Year"
+        },
+        {
+          "calculate": "min(7, ceil(toNumber(datum.forest_cover_rate_percentage) / 10))",
+          "as": "nIcons"
+        }
+      ],
+      "encoding": {
+        "y": {
+          "field": "name",
+          "type": "nominal",
+          "title": "States",
+          "sort": {"field": "forest_cover_rate_percentage", "op": "mean", "order": "descending"}
+        },
+        "tooltip": [
+          {"field": "name", "type": "nominal", "title": "State"},
+          {"field": "forest_cover_rate_percentage", "type": "quantitative", "title": "Forest cover (%)"},
+          {"field": "nIcons", "type": "quantitative", "title": "Number of trees (per 10%)"}
+        ]
+      },
+      "layer": [
+        {
+          "transform": [{"filter": "datum.nIcons >= 1"}],
+          "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+          "encoding": {"x": {"value": 20}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+        },
+        {
+          "transform": [{"filter": "datum.nIcons >= 2"}],
+          "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+          "encoding": {"x": {"value": 60}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+        },
+        {
+          "transform": [{"filter": "datum.nIcons >= 3"}],
+          "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+          "encoding": {"x": {"value": 100}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+        },
+        {
+          "transform": [{"filter": "datum.nIcons >= 4"}],
+          "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+          "encoding": {"x": {"value": 140}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+        },
+        {
+          "transform": [{"filter": "datum.nIcons >= 5"}],
+          "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+          "encoding": {"x": {"value": 180}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+        },
+        {
+          "transform": [{"filter": "datum.nIcons >= 6"}],
+          "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+          "encoding": {"x": {"value": 220}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+        },
+        {
+          "transform": [{"filter": "datum.nIcons >= 7"}],
+          "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+          "encoding": {"x": {"value": 260}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+        }
+      ],
+      "width": 500,
+      "height": {"step": 30},
+      "title": "Malaysia Permanent Forest Coverage from 2003 to 2021",
+      "config": {
+        "axis": {"labelFontSize": 12, "titleFontSize": 13},
+        "title": {"fontSize": 14}
+      }
+    };
 
-            "config": { "view": { "stroke": "transparent" }, "axis": { "domain": false } }
-            };
+    // 渲染
+    vegaEmbed("#viz-map", specMap, {actions: false, renderer: "canvas"}).catch(console.error);
+    vegaEmbed("#viz-iso", specIso, {actions: false, renderer: "canvas"}).catch(console.error);
 
-        vegaEmbed('#vis', vlSpec, {
-            actions: false,
-            renderer: 'svg'
-        }).catch(console.error);
-    </script>
+    // 响应式：让地图在窄屏下缩放（保持比例）
+    const resizeMap = () => {
+      const mapEl = document.querySelector("#viz-map");
+      if (!mapEl) return;
+      const containerWidth = mapEl.clientWidth || mapEl.parentElement.clientWidth;
+      // 700 为原始宽度，做一个简单的缩放提示（Vega-Lite会自动重排，但我们确保容器更友好）
+      mapEl.style.maxWidth = "100%";
+    };
+    window.addEventListener("resize", resizeMap);
+    resizeMap();
+  </script>
 </body>
 </html>
+
 
 
