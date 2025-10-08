@@ -292,7 +292,7 @@
 
     const specIso = {
       "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json",
-      "description": "Isotype-style: 🌳 per 10% forest cover (capped at 7 = 70%). Slider selects year 2003–2021. Increased horizontal spacing for emojis.",
+      "description": "Isotype: 🌳 per 10% forest cover (capped at 7 = 70%). Slider selects year 2003-2021. Increased horizontal spacing for emojis.",
       "data": {
         "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/forest_coerage_clean.csv",
         "format": {"type": "csv"}
@@ -306,13 +306,8 @@
         }
       ],
       "transform": [
-        {
-          "calculate": "toNumber(substring(datum.date, 0, 4))",
-          "as": "year"
-        },
-        {
-          "filter": "datum.year == Choose_Year"
-        },
+        {"calculate": "toNumber(substring(datum.date, 0, 4))", "as": "year"},
+        {"filter": "datum.year == Choose_Year"},
         {
           "calculate": "min(7, ceil(toNumber(datum.forest_cover_rate_percentage) / 10))",
           "as": "nIcons"
@@ -366,6 +361,41 @@
           "transform": [{"filter": "datum.nIcons >= 7"}],
           "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
           "encoding": {"x": {"value": 260}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+        },
+
+        {
+          "mark": {
+            "type": "rect",
+            "fill": "lightgreen",
+            "stroke": null,
+            "opacity": 1,
+            "zindex": 0
+          },
+          "encoding": {
+            "x": {"value": 120},
+            "y": {"value": 200},
+            "x2": {"value": 488},
+            "y2": {"value": 260}
+          }
+        },
+
+        {
+          "mark": {
+            "type": "text",
+            "fontSize": 14,
+            "color": "darkgreen",
+            "align": "left",
+            "baseline": "top",
+            "lineBreak": "\n",
+            "zindex": 1
+          },
+          "encoding": {
+            "x": {"value": 125},
+            "y": {"value": 207},
+            "text": {
+              "value": "Malaysia's overall forest cover stands at approximately \n40%, with no significant change observed between \n2003 and 2021."
+            }
+          }
         }
       ],
       "width": 500,
