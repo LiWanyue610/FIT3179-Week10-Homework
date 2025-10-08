@@ -13,13 +13,14 @@
   <style>
     :root {
       --bg: #ebf6f9;
-      --card: #0d1527;
+      --card: #e5feeb;
       --muted: #3c7250;
       --text: #07352b;
-      --accent: #7bd389;
+      --accent: #1e9c33;
       --accent-2: #32434d;
       --border: rgba(255,255,255,0.12);
       --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --keypoints: #639976;
     }
     * { box-sizing: border-box; }
     body {
@@ -27,8 +28,7 @@
       background: radial-gradient(1200px 600px at 70% -10%, rgba(63,139,255,0.15), transparent) ,
                   radial-gradient(900px 500px at 10% 120%, rgba(0,255,204,0.08), transparent),
                   var(--bg);
-      color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+      font-family:  "Helvetica Neue", Arial, sans-serif;
       line-height: 1.6;
     }
     .wrap {
@@ -70,7 +70,7 @@
     }
 
     .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      background: var(--card);
       border: 1px solid var(--border);
       border-radius: 16px;
       box-shadow: var(--shadow);
@@ -114,6 +114,10 @@
       margin: 12px 0 0;
       padding: 0;
       list-style: none;
+      background: var(--keypoints);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      color:rgb(240, 255, 253);
     }
     .chip {
       border: 1px dashed var(--border);
@@ -145,66 +149,72 @@
 <body>
   <div class="wrap">
     <header>
-      <div class="eyebrow">Analysis of Malaysia's Permanent Forest Cover</div>
-      <h1>Analysis of Malaysia's Permanent Forest Cover</h1>
-      <p class="subtitle">Visualisation of Permanent Forest Cover Rates Across Malaysian States</p>
+      <div class="eyebrow">Analysis of Malaysia's Permanent Forest Coverage</div>
+      <h1>Analysis of Malaysia's Permanent Forest Coverage</h1>
+      <p class="subtitle">Visualisation of Permanent Forest Cover Proportion Across Malaysian States</p>
       <p class="author">Author: Li Wanyue</p>
     </header>
 
-    <!-- 图 1：Choropleth Map -->
+
     <section class="card" aria-labelledby="map-title">
       <div class="card__head">
-        <div class="kicker">Choropleth Map · 2021</div>
-        <h2 id="map-title">马来西亚各州永久森林覆盖率（2021）</h2>
+        <div class="kicker">Choropleth Map (2021)</div>
+        <h2 id="map-title">Malaysian State Permanent Forest Coverage in 2021</h2>
         <p class="desc">
-          这张分级设色地图以经纬网（graticule）和海洋底色衬托各州边界，按照永久森林覆盖率（%）分段着色。鼠标悬停可查看州名与具体比例。
+          This choropleth map depicts state boundaries against a backdrop of a graticule and oceanic base colour, 
+          with areas shaded according to permanent forest cover percentage. Hovering the mouse reveals state names and specific coverage.
         </p>
       </div>
       <div class="viz">
-        <div id="viz-map" role="img" aria-label="2021年马来西亚各州永久森林覆盖率的分级设色地图"></div>
+        <div id="viz-map" role="img" aria-label="2021 Choropleth Map of Permanent Forest Cover by State in Malaysia"></div>
       </div>
       <div class="caption">
-        <strong>关键重点：</strong>
+        <strong>Key Points:</strong>
         <ul class="keypoints">
-          <li class="chip">深绿色代表更高覆盖率；门槛分段：10、20、30、40、50、60。</li>
-          <li class="chip">海洋底色采用柔和蓝色 <code class="inline">#cfeeff</code>，边界描边细致提升可读性。</li>
-          <li class="chip">地图投影为墨卡托（中心 <code class="inline">[109, 4]</code>，缩放 <code class="inline">1200</code>）。</li>
+          <li class="chip">Deeper grean means higher forest coverage; The gaps are 10%, 20%, 30%, 40%, 50%, 60%.</li>
+          <li class="chip">Regional differences: Forest cover in Sabah and Sarawak is generally higher than in western Malaysia. 
+            The state with the highest forest cover in the west is Melaka (which also holds the highest forest cover across the whole of Malaysia).</li>
+          <li class="chip">Protection effectiveness: Several states maintain forest cover exceeding 40%, demonstrating effective conservation measures.</li>
         </ul>
       </div>
     </section>
 
-    <!-- 图 2：Isotype Chart -->
+
     <section class="card" aria-labelledby="iso-title">
       <div class="card__head">
-        <div class="kicker">Isotype · 2003–2021</div>
-        <h2 id="iso-title">🌳 图标指示的各州森林覆盖率（带年份滑块）</h2>
+        <div class="kicker">Isotype (2003 - 2021)</div>
+        <h2 id="iso-title">Forest cover rates for each state represented by emojis🌳 (with year slider)</h2>
         <p class="desc">
-          以等值图示（isotype）呈现：每一棵树代表约<em>10%</em>的永久森林覆盖，最多显示 7 棵（即 70%）。拖动滑块可查看 2003–2021 年任意年份的横向对比。
+          Presented using isotype: each tree represents approximately 10% of permanent forest cover. 
+          Drag the slider to view a year-on-year comparison for any year between 2003 and 2021.
         </p>
       </div>
       <div class="viz">
-        <div id="viz-iso" role="img" aria-label="2003至2021年可交互的各州森林覆盖率isotype图"></div>
+        <div id="viz-iso" role="img" aria-label="Interactive isotype maps of forest coverage by state, 2003 to 2021"></div>
       </div>
       <div class="caption">
-        <strong>关键重点：</strong>
+        <strong>Key Points:</strong>
         <ul class="keypoints">
-          <li class="chip">树木数量直观映射覆盖率（每 10% 一棵，向上取整，上限 7）。</li>
-          <li class="chip">按覆盖率降序排列各州，便于发现高覆盖与低覆盖聚集。</li>
-          <li class="chip">滑块选择年份，支持跨年变化对比与趋势洞察。</li>
+          <li class="chip">The number of trees directly corresponds to the coverage rate (one tree per 10%, rounded up).</li>
+          <li class="chip">The data for Sarawak in 2010 and 2011 were not available (NA), so the mean value for Sarawak across the 
+            entire time period was used to impute the missing values during dataset cleaning.</li>
+          <li class="chip">Use the slider to select a year, enabling cross-year comparisons and trend analysis.</li>
         </ul>
       </div>
     </section>
 
     <footer>
-      <strong>数据来源（Data Sources）：</strong>
-      <span>（请在此处补充数据来源链接与说明）</span>
+      <strong>Data Source: </strong>
+      <p>Author: OpenDOSM (Department of National Statistics, Malaysia)</p>
+      <p>Link: 
+        <a href = "https://open.dosm.gov.my/data-catalogue/forest_reserve_state">
+        Click here to view the source website.
+      </a></p>
+        <p>Information: Permanent Forest Reserve Areas by State - Year-end permanent forest reserve areas by state. Data as of 2021.</p>
     </footer>
   </div>
 
   <script>
-    // -------------------------------
-    // 规格一：Choropleth Map（用户提供）
-    // -------------------------------
     const specMap = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "description": "Choropleth of Malaysia states - permanent forest area percentage (2021). Ocean = blue, graticule included.",
@@ -277,9 +287,6 @@
       }
     };
 
-    // -------------------------------
-    // 规格二：Isotype（用户提供）
-    // -------------------------------
     const specIso = {
       "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json",
       "description": "Isotype-style: 🌳 per 10% forest cover (capped at 7 = 70%). Slider selects year 2003–2021. Increased horizontal spacing for emojis.",
@@ -367,16 +374,13 @@
       }
     };
 
-    // 渲染
     vegaEmbed("#viz-map", specMap, {actions: false, renderer: "canvas"}).catch(console.error);
     vegaEmbed("#viz-iso", specIso, {actions: false, renderer: "canvas"}).catch(console.error);
 
-    // 响应式：让地图在窄屏下缩放（保持比例）
     const resizeMap = () => {
       const mapEl = document.querySelector("#viz-map");
       if (!mapEl) return;
       const containerWidth = mapEl.clientWidth || mapEl.parentElement.clientWidth;
-      // 700 为原始宽度，做一个简单的缩放提示（Vega-Lite会自动重排，但我们确保容器更友好）
       mapEl.style.maxWidth = "100%";
     };
     window.addEventListener("resize", resizeMap);
